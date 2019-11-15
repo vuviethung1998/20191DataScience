@@ -32,6 +32,7 @@ def search_director(es_client, director_name):
 	if director_name is not None:
 		query = {"query": {}}
 
+
 if __name__ == '__main__':
 	es_client = Elasticsearch(ES_ADD)
 	# es_result = search_film(es_client, film_name="Batman")
