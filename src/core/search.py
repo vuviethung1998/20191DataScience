@@ -25,7 +25,6 @@ def get_default_recommendation(es_client):
 		"function_score": {"query": query['query'], "script_score": {"script": "_score"}}}}
 	return es_client.search(body=query, timeout='5m')
 
-
 def search_director(es_client, director_name):
 	query = None
 
