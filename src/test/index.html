@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Test api</title>
+    <style media="screen">
+      #content-container {
+        display: flex;
+        flex-direction: row;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="input" type="text">
+    <div id="content-container">
+      <ol id="list" style="flex: 5"></ol>
+      <div style="flex: 1"></div>
+      <ol id="suggest" style="flex: 5"></ol>
+    </div>
+
+    <script type="text/javascript">
+      function sendAjaxRequest(method, url, data, success) {
+        const params = Object.keys(data).map(
+          function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+        ).join('&')
+
+        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP')
+        xhr.open(method, url)
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState > 3 && xhr.status == 200) { success(xhr.responseText) }
+        }
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.send(params)
+        return xhr
+      }
+
+      const input = document.getElementById('input')
+      const list = document.getElementById('list')
+      const suggest = document.getElementById('suggest')
+
+      input.addEventListener('keyup', e => {
+        const EXCEPTED_KEY = ['Space', 'Backspace']
+        if (input.value && (e.key.length === 1 || EXCEPTED_KEY.includes(e.key))) {
+          e.preventDefault();
+
+          sendAjaxRequest('GET', `http://localhost:5000/${input.value}`, {}, res => {
+            let child = list.lastElementChild
+            while (child) {
+              list.removeChild(child);
+              child = list.lastElementChild;
+            }
+            const data = JSON.parse(res).data
+            data.forEach(film => {
+              let text = film['original_title']
+              text += ' | '
+              if (film.characters) {
+                text += film['characters'].reduce((str, cur) => str + ' ' + cur['char_name'], '')
+              }
+              text += ' | '
+              if (film.directors) {
+                text += film['directors'].reduce((str, cur) => str + ' ' + cur['director_name'], '')
+              }
+              const listItem = document.createElement('li')
+              listItem.innerHTML = text
+              list.appendChild(listItem)
+            })
+          })
+
+          sendAjaxRequest('GET', `http://localhost:5000/auto/${input.value}`, {}, res => {
+            let child = suggest.lastElementChild
+            while (child) {
+              suggest.removeChild(child);
+              child = suggest.lastElementChild;
+            }
+            const data = JSON.parse(res).data
+            data.forEach(film => {
+              let text = film['original_title']
+              text += ' | '
+              if (film.characters) {
+                text += film['characters'].reduce((str, cur) => str + ' ' + cur['char_name'], '')
+              }
+              text += ' | '
+              if (film.directors) {
+                text += film['directors'].reduce((str, cur) => str + ' ' + cur['director_name'], '')
+              }
+              const listItem = document.createElement('li')
+              listItem.innerHTML = text
+              suggest.appendChild(listItem)
+            })
+          })
+        }
+      })
+    </script>
+  </body>
+</html>
