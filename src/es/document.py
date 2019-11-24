@@ -7,7 +7,8 @@ from elasticsearch_dsl import (
     Boolean,
     Keyword,
     Float,
-    Nested
+    Nested,
+    Completion
 )
 
 from src.es.config import ELASTIC_HOST, ELASTIC_INDEX
@@ -33,6 +34,7 @@ class Film(Document):
     vote_average = Float()
     vote_count = Integer()
     keywords = Nested(properties={'keyword': Keyword()})
+    suggestion = Completion()
 
     class Index:
         name = ELASTIC_INDEX
@@ -40,4 +42,4 @@ class Film(Document):
 
 if __name__ == '__main__':
     connections.create_connection(hosts=[ELASTIC_HOST])
-    # Film.init()
+    Film.init()

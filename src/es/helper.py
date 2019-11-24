@@ -2,8 +2,8 @@ from elasticsearch_dsl import Search, connections, Q
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl.query import SimpleQueryString
 
-from src.es.config import ELASTIC_HOST, ELASTIC_INDEX
-from src.es.document import Film
+from .config import ELASTIC_HOST, ELASTIC_INDEX
+from .document import Film
 
 from elasticsearch.exceptions import NotFoundError
 
@@ -18,6 +18,15 @@ def connect_es():
 
 def create_connection_es():
     connections.create_connection(hosts=[ELASTIC_HOST])
+
+
+# SUGGESTION
+def get_suggestion(text, field, page=0):
+    client = connect_es()
+    s = Search(using=client, index=ELASTIC_INDEX) \
+        .suggest('suggestion', text, completion={'field': field})  \
+        .execute()
+    return get_results_from_suggestion(s.suggest['suggestion'])
 
 
 # AGGREGATIONS
@@ -125,14 +134,22 @@ def get_results_from_scan(res):
     return results
 
 
-def get_results_classic(res, page):
-    data_list = list()
-    results = dict()
+def get_results_from_suggestion(items):
+    data = list()
+    suggestions = list()
+    for item in items:
+        data.append(item.to_dict())
+    data = get_data_list(data[0]['options'])
 
-    for hit in res['hits']['hits']:
-        doc = hit['_source']
-        doc['_id'] = hit['_id']
-        data_list.append(doc)
+    return {
+        'total': len(data),
+        'data': data
+    }
+
+
+def get_results_classic(res, page):
+    data_list = get_data_list(res['hits']['hits'])
+    results = dict()
 
     total = res['hits']['total']
 
@@ -146,3 +163,14 @@ def get_results_classic(res, page):
     results['data'] = data_list
 
     return results
+
+
+def get_data_list(hits):
+    data_list = list()
+    for hit in hits:
+        doc = hit['_source']
+        doc['_id'] = hit['_id']
+        if hit.get('text'):
+            doc['text'] = hit['text']
+        data_list.append(doc)
+    return data_list

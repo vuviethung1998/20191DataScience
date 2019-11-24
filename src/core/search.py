@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 
 from src.config.config import *
-from src.es.helper import simple_search
+from src.es.helper import simple_search, get_suggestion
 
 
 def get_client():
@@ -23,6 +23,9 @@ def search_film(film_name):
 def real_time_search(query):
 	fields = ['original_title', 'directors__director_name', 'characters__char_name']
 	return simple_search(query, fields)
+
+def autocomplete(text):
+	return get_suggestion(text, 'suggestion')
 
 
 def get_default_recommendation():
