@@ -1,7 +1,8 @@
 from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Q
 
 from src.config.config import *
-from src.es.helper import simple_search, get_suggestion
+from src.helper.es.helper import search_by_query, get_suggestion
 
 
 def get_client():
@@ -20,14 +21,6 @@ def search_film(film_name):
 		return es_client.search(body=query, timeout='5m')
 
 
-def real_time_search(query):
-	fields = ['original_title', 'directors__director_name', 'characters__char_name']
-	return simple_search(query, fields)
-
-def autocomplete(text):
-	return get_suggestion(text, 'suggestion')
-
-
 def get_default_recommendation():
 	es_client = get_client()
 	# gioi thieu phim co do noi tieng lon nhat, san xuat sau 2005 va co doanh thu > 100 tr
@@ -40,11 +33,25 @@ def get_default_recommendation():
 				"query": {"function_score": {"query": query['query'], "script_score": {"script": "_score"}}}}
 	return es_client.search(body=query, timeout='5m')
 
+
 def search_director(es_client, director_name):
 	query = None
 
 	if director_name is not None:
 		query = {"query": {}}
+
+
+# Cho nay cua Duc
+def real_time_search(query):
+	q = Q('match', original_title=query) \
+		| Q('match', directors__director_name=query) \
+		| Q('match', characters__char_name=query)
+	return search_by_query({'query': q.to_dict()})
+
+
+def autocomplete(text):
+	return get_suggestion(text, 'suggestion')
+
 
 if __name__ == '__main__':
 	es_client = Elasticsearch(ES_ADD)

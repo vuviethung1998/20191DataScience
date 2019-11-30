@@ -11,7 +11,7 @@ from elasticsearch_dsl import (
     Completion
 )
 
-from src.es.config import ELASTIC_HOST, ELASTIC_INDEX
+from src.helper.es.config import ELASTIC_HOST, ELASTIC_INDEX
 
 
 class Film(Document):

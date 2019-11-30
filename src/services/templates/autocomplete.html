@@ -44,7 +44,7 @@
         if (input.value && (e.key.length === 1 || EXCEPTED_KEY.includes(e.key))) {
           e.preventDefault();
 
-          sendAjaxRequest('GET', `http://localhost:5000/${input.value}`, {}, res => {
+          sendAjaxRequest('GET', `http://localhost:5000/raw/${input.value}`, {}, res => {
             let child = list.lastElementChild
             while (child) {
               list.removeChild(child);
