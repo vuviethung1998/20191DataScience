@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
@@ -8,7 +9,8 @@ from pyspark.ml.recommendation import ALS, ALSModel
 conf = SparkConf().setAppName('profile').set('spark.executor.memory', '10g')
 spark = SparkSession.builder.config(conf=conf).getOrCreate()
 
-MODEL_PATH = "src/model/best_model.model"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_PATH, "best_model.model")
 
 def loadModel(path):
     model = ALSModel.load(path)
