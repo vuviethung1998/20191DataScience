@@ -41,6 +41,12 @@ def raw_search(query):
     items = search.real_time_search(query)
     return items
 
+@app.route('/logs/', methods=['POST'])
+# @cross_origin()
+def recommend_by_logs():
+	if request.method == 'POST':
+		return search.log_recommend(json.loads(request.data))
+
 @app.route('/auto/<query>')
 # @cross_origin()
 def autocomplete_search(query):
