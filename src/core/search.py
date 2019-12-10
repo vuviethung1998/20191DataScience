@@ -1,8 +1,12 @@
+import json
+
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q
 
 from src.config.config import *
 from src.helper.es.helper import search_by_query, get_suggestion
+
+from src.model.als_recommend import recommend
 
 
 def get_client():
@@ -51,6 +55,17 @@ def real_time_search(query):
 
 def autocomplete(text):
 	return get_suggestion(text, 'suggestion')
+
+
+def log_recommend(logs):
+	results = list(recommend(logs))
+	q = None
+	for film_id in results:
+		if q is None:
+			q = Q('term', id=int(film_id))
+		else:
+			q = q | Q('term', id=int(film_id))
+	return search_by_query({'query': q.to_dict()})
 
 
 if __name__ == '__main__':
