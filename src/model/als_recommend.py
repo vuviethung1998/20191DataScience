@@ -52,15 +52,15 @@ def set_rating(np_keyF, full_u, key, val):
         pass
 
 
-if __name__ == '__main__':
-    dict = {
-        "260": 4,
-        "16": 3,
-        "25": 5,
-        "335": 1,
-        "379": 4,
-        "296": 2,
-        "858": 3
-    }
-    top_ten_ratings = recommend(dict)
-    print("Top 10 recommend movie", top_ten_ratings)
+# if __name__ == '__main__':
+#     dict = {
+#         "260": 4,
+#         "16": 3,
+#         "25": 5,
+#         "335": 1,
+#         "379": 4,
+#         "296": 2,
+#         "858": 3
+#     }
+#     top_ten_ratings = recommend(dict)
+#     print("Top 10 recommend movie", top_ten_ratings)

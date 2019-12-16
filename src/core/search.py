@@ -68,6 +68,7 @@ def log_recommend(logs):
 	results = list(recommend(logs))
 	q = None
 	for film_id in results:
+		print(int(film_id))
 		if q is None:
 			q = Q('term', id=int(film_id))
 		else:
