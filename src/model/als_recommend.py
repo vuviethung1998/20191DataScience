@@ -12,9 +12,11 @@ spark = SparkSession.builder.config(conf=conf).getOrCreate()
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_PATH, "best_model.model")
 
+
 def loadModel(path):
     model = ALSModel.load(path)
     return model
+
 
 def recommend(dict):
     model = loadModel(MODEL_PATH)
@@ -41,6 +43,7 @@ def recommend(dict):
 
     return top_ten_ratings
 
+
 def set_rating(np_keyF, full_u, key, val):
     try:
         idx = list(np_keyF).index(key)
@@ -48,15 +51,16 @@ def set_rating(np_keyF, full_u, key, val):
     except:
         pass
 
-if __name__ == '__main__':
-    dict = {
-        "260": 4,
-        "16": 3,
-        "25": 5,
-        "335": 1,
-        "379": 4,
-        "296": 2,
-        "858": 3
-    }
-    top_ten_ratings = recommend(dict)
-    print("Top 10 recommend movie", top_ten_ratings)
+
+# if __name__ == '__main__':
+#     dict = {
+#         "260": 4,
+#         "16": 3,
+#         "25": 5,
+#         "335": 1,
+#         "379": 4,
+#         "296": 2,
+#         "858": 3
+#     }
+#     top_ten_ratings = recommend(dict)
+#     print("Top 10 recommend movie", top_ten_ratings)
