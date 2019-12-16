@@ -12,9 +12,11 @@ spark = SparkSession.builder.config(conf=conf).getOrCreate()
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_PATH, "best_model.model")
 
+
 def loadModel(path):
     model = ALSModel.load(path)
     return model
+
 
 def recommend(dict):
     model = loadModel(MODEL_PATH)
@@ -41,12 +43,14 @@ def recommend(dict):
 
     return top_ten_ratings
 
+
 def set_rating(np_keyF, full_u, key, val):
     try:
         idx = list(np_keyF).index(key)
         full_u.itemset(idx, val)
     except:
         pass
+
 
 if __name__ == '__main__':
     dict = {

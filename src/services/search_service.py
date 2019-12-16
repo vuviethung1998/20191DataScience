@@ -18,14 +18,16 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def hello():
 	return "Hello world"
 
+
 @app.route('/default-recommendation', methods=['GET','POST'])
 def default_recommend():
-	return jsonify(search.get_default_recommendation(es_client))
+	return jsonify(search.get_default_recommendation())
+
 
 @app.route('/form-search', methods=['GET', 'POST'])
 def form_search():
 	if request.method == 'POST':
-		return jsonify(search.search_film(es_client, json.dumps(request.form['film'], ensure_ascii= False)))
+		return jsonify(search.search_film(json.dumps(request.form['film'], ensure_ascii=False)))
 	else:
 		return render_template('form.html')
 
@@ -33,13 +35,15 @@ def form_search():
 @app.route('/test-autocomplete')
 # @cross_origin()
 def test_autocomplete():
-    return render_template('autocomplete.html')
+	return render_template('autocomplete.html')
+
 
 @app.route('/raw/<query>')
 # @cross_origin()
 def raw_search(query):
-    items = search.real_time_search(query)
-    return items
+	items = search.real_time_search(query)
+	return items
+
 
 @app.route('/logs/', methods=['POST'])
 # @cross_origin()
@@ -47,8 +51,9 @@ def recommend_by_logs():
 	if request.method == 'POST':
 		return search.log_recommend(json.loads(request.data))
 
+
 @app.route('/auto/<query>')
 # @cross_origin()
 def autocomplete_search(query):
-    items = search.autocomplete(query)
-    return items
+	items = search.autocomplete(query)
+	return items

@@ -26,16 +26,23 @@ def search_film(film_name):
 
 
 def get_default_recommendation():
-	es_client = get_client()
-	# gioi thieu phim co do noi tieng lon nhat, san xuat sau 2005 va co doanh thu > 100 tr
-	query = {"query": {"bool": {"must": [
-		{"range": {"popularity": {"gte": 20}}},
-		{"range": {'release_date': {"gte": "2005-01-01T00:00:00"}}},
-		{"range": {"budget": {"gte": "100000000"}}}
-	]}}}
-	query = {	"_source": {"includes": [ "original_title", "poster_path", "release_date" ]},
-				"query": {"function_score": {"query": query['query'], "script_score": {"script": "_score"}}}}
-	return es_client.search(body=query, timeout='5m')
+	# Cho nay cua Hung
+	# es_client = get_client()
+	# # gioi thieu phim co do noi tieng lon nhat, san xuat sau 2005 va co doanh thu > 100 tr
+	# query = {"query": {"bool": {"must": [
+	# 	{"range": {"popularity": {"gte": 20}}},
+	# 	{"range": {'release_date': {"gte": "2005-01-01T00:00:00"}}},
+	# 	{"range": {"budget": {"gte": "100000000"}}}
+	# ]}}}
+	# query = {	"_source": {"includes": [ "original_title", "poster_path", "release_date", "id" ]},
+	# 			"query": {"function_score": {"query": query['query'], "script_score": {"script": "_score"}}}}
+	# return es_client.search(body=query, timeout='5m')
+
+	# Cho nay cua Duc
+	q = Q('range', popularity={"gte": 20}) \
+		& Q('range', release_date={"gte": "2005-01-01T00:00:00"}) \
+		& Q('range', budget={"gte": "100000000"})
+	return search_by_query({'query': q.to_dict()})
 
 
 def search_director(es_client, director_name):
@@ -68,8 +75,8 @@ def log_recommend(logs):
 	return search_by_query({'query': q.to_dict()})
 
 
-if __name__ == '__main__':
-	es_client = Elasticsearch(ES_ADD)
-	es_result = search_film(es_client, film_name="Forrest Gump")
-	# es_result = get_default_recommendation(es_client)
-	print(es_result)
+# if __name__ == '__main__':
+# 	es_client = Elasticsearch(ES_ADD)
+# 	es_result = search_film(es_client, film_name="Forrest Gump")
+# 	# es_result = get_default_recommendation(es_client)
+# 	print(es_result)

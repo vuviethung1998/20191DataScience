@@ -1,8 +1,8 @@
 from elasticsearch_dsl import A
 
-from es.helper import *
+from src.helper.es.helper import *
 
-from thread_pool import ThreadPool
+from src.helper.thread_pool import ThreadPool
 
 
 def add_suggestion(item):
