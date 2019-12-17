@@ -1,7 +1,7 @@
 # 20191DataScience
 ## Recommending system based on Film Metadata
 
-### Prequisites
+### Prerequisites
 * Python3
 * Pip
 * Elasticsearch 6.* running on port 9200 with mappings and data
