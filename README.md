@@ -18,6 +18,6 @@ flask run
 ```
 
 ### Run website
-```npm
-start
+```bash
+npm start
 ```
