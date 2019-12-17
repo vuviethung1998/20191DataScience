@@ -20,28 +20,24 @@ def loadModel(path):
 
 def recommend(dict):
     model = loadModel(MODEL_PATH)
-    iFactor = model.itemFactors
+    iFactor = model.itemFactors.sort(F.col('id'))
 
-    itemKeyF = iFactor.select(F.col("id")).toPandas()
-    itemKeyFToList = itemKeyF['id'].tolist()
+    itemKeyF = np.array(iFactor.select(F.col("id")).toPandas()['id'].tolist())
 
-    np_keyF = np.array(itemKeyFToList)
+    itemValueF = np.array(iFactor.select(F.col("features")).toPandas()['features'].tolist() )
 
-    itemValueF = iFactor.select(F.col("features")).toPandas()
-    itemValueFToList = itemValueF['features'].tolist()
-
-    np_itemF = np.array(itemValueFToList)
-
-    full_u = np.zeros(np_keyF.size)
+    full_u = np.zeros(itemKeyF.size)
 
     for key, val in dict.items():
-        set_rating(np_keyF, full_u, int(key), val)
+        set_rating(itemKeyF, full_u, int(key), val)
 
-    recommendations = np.dot(full_u, np.dot(np_itemF, np_itemF.T))
+    recommendations = np.dot(full_u, np.dot(itemValueF,itemValueF.T) )
 
     top_ten_ratings = np.argpartition(recommendations, -10)[-10:]
 
-    return top_ten_ratings
+    rating = [itemKeyF[rate] for rate in top_ten_ratings]
+
+    return rating
 
 
 def set_rating(np_keyF, full_u, key, val):
@@ -49,10 +45,11 @@ def set_rating(np_keyF, full_u, key, val):
         idx = list(np_keyF).index(key)
         full_u.itemset(idx, val)
     except:
-        pass
+        idx = list(np_keyF).index(174487)
+        full_u.itemset(idx, 4)
 
 
-# if __name__ == '__main__':
+# if name == 'main':
 #     dict = {
 #         "260": 4,
 #         "16": 3,

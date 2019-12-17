@@ -1,7 +1,17 @@
 # 20191DataScience
-Recommending system based on Film Metadata
+## Recommending system based on Film Metadata
 
-Run flask
+### Prerequisites
+* Python3
+* Pip
+* Elasticsearch 6.* running on port 9200 with mappings and data
+
+### Setup environment
 ```bash
-FLASK_APP=app.py FLASK_DEBUG=1 python -m flask run
+pip install -r requirements.txt
+```
+
+### Start server
+```bash
+flask run
 ```
