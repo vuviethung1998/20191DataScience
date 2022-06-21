@@ -6,7 +6,7 @@ Flask-Cors==3.0.8
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
-numpy==1.17.4
+numpy==1.22.0
 pandas==0.25.3
 py4j==0.10.7
 pyspark==2.4.4
