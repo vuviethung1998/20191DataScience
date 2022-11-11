@@ -9,7 +9,7 @@ MarkupSafe==1.1.1
 numpy==1.17.4
 pandas==0.25.3
 py4j==0.10.7
-pyspark==2.4.4
+pyspark==3.2.2
 python-dateutil==2.8.1
 python-dotenv==0.10.3
 pytz==2019.3
